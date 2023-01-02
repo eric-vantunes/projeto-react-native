@@ -1,5 +1,7 @@
+import { View, Text } from "react-native";
+
 const Login = () => {
-  return 'Login' 
+  return <View><Text></Text></View> 
 }
 
 export default Login;

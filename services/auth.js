@@ -1,5 +1,5 @@
 const isLoggedIn = () => {
-  return false;
+  return true;
 };
 
 const login = () => {};
