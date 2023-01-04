@@ -1,6 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { Text, View } from 'react-native';
 import { useState, useEffect } from 'react';
+import { IconButton } from 'react-native-paper';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -23,27 +25,68 @@ export default function App() {
     setUserLoggedIn(isLoggedIn());
   }, [])
 
+  const leaveButton = () => {
+    return <IconButton
+              icon="exit-to-app"
+              size={20}
+              onPress={() => console.log('Pressed')}
+           />
+  }
+
   return (
     <NavigationContainer>
       {
         userLoggedIn ?
-                  <Tab.Navigator>
-                    <Tab.Screen name="My tasks" 
-                    component={Home}
-                    options={{
-                      headerTitleAlign: "My tasks",
-                      headerRight: () => {
-                        return <Text>Exit</Text>
-                      }
-                    }}
-                    />
-                    <Tab.Screen name="Profile" component={Profile}/>
-                  </Tab.Navigator>
-                  :
-                  <Stack.Navigator>
-                    <Stack.Screen name='Login' component={Login}/>
-                    <Stack.Screen name='Register' component={Register}/>
-                  </Stack.Navigator>
+          <Tab.Navigator screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, size }) => {
+              const icons = {
+                Home: 'home',
+                Profile: 'account',
+              };
+        
+              return (
+                <MaterialCommunityIcons
+                  name={icons[route.name]}
+                  color={color}
+                  size={size}
+                />
+              );
+            },
+          })}
+          initialRouteName="Home"
+          >
+            <Tab.Screen name="Home" 
+            component={Home}
+            options={{
+              headerTitleAlign: "home",
+              headerRight: () => leaveButton()
+            }}
+            />
+            <Tab.Screen name="Profile" 
+            component={Profile}
+            options={{
+              headerTitleAlign: "Profile",
+              headerRight: () => leaveButton()
+            }}
+            />
+          </Tab.Navigator>
+          :
+          <Stack.Navigator>
+            <Stack.Screen 
+              name='Login' 
+              component={Login}
+              options={{
+                headerShown: false
+              }}
+            />
+            <Stack.Screen 
+              name='Register' 
+              component={Register}
+              options={{
+                headerShown: false
+              }}
+              />
+          </Stack.Navigator>
       }
 
     </NavigationContainer>

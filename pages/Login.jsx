@@ -1,7 +1,9 @@
 import { View, Text } from "react-native";
 
 const Login = () => {
-  return <View><Text></Text></View> 
+  return <View>
+      <Text>Login</Text>
+    </View> 
 }
 
 export default Login;
