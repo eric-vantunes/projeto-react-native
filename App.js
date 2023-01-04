@@ -78,6 +78,10 @@ export default function App() {
               options={{
                 headerShown: false
               }}
+
+              initialParams={{
+                teste: 'Olá mundo'
+              }}
             />
             <Stack.Screen 
               name='Register' 

@@ -2,9 +2,15 @@ const isLoggedIn = () => {
   return false;
 };
 
-const login = () => {};
+const login = (email, password) => {
+  console.log(email);
+  console.log(password);
+};
 
-const register = () => {};
+const register = (email, password) => {
+  console.log(email);
+  console.log(password);
+};
 
 export {
   isLoggedIn,
