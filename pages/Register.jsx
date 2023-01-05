@@ -1,29 +1,41 @@
 import { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Button ,TextInput, Avatar } from "react-native-paper";
+import { Button ,TextInput, Avatar, useTheme } from "react-native-paper";
 import { register } from "../services/auth";
 
 const Register = ({ route, navigation }) => {
-  const [username, setUserName] = useState("");
+  const theme = useTheme();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-
-  return <View style={style.box}>
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({
+      email: {
+          status: false,
+          msg: ""
+      },
+      password: {
+          status: false,
+          msg: ""
+      },
+      confirmPassword: {
+          status: false,
+          msg: ""
+      },
+  });
+  
+  return <View style={{
+              ...style.box,
+              backgroundColor: theme.colors.inverseOnSurface
+          }}>
             <Avatar.Image style={style.avatar} size={250} source={require('../assets/img/logo.png')} />
             <Text style={style.text}>Sign-up</Text>
             <TextInput
             style={style.input}
             mode="outlined"
-            label="Username"
-            value={username}
-            onChangeText={text => setUserName(text)}
-          />
-            <TextInput
-            style={style.input}
-            mode="outlined"
             label="E-mail"
             value={email}
+            error={errors.email.status}
             onChangeText={text => setEmail(text)}
           />
           <TextInput
@@ -31,18 +43,29 @@ const Register = ({ route, navigation }) => {
             mode="outlined"
             label="Password"
             value={password}
+            error={errors.password.status}
             secureTextEntry={true}
             onChangeText={text => setPassword(text)}
           />
+          { errors.password.status ? <Text style={style.erro}>{ errors.password.msg }</Text> : <Text></Text> }
+          <TextInput
+            style={style.input}
+            mode="outlined"
+            label="Confirm password"
+            value={confirmPassword}
+            error={errors.confirmPassword.status}
+            secureTextEntry={true}
+            onChangeText={text => setConfirmPassword(text)}
+          />
           <View style={style.container}>
+          { errors.confirmPassword.status ? <Text style={style.erro}>{ errors.confirmPassword.msg }</Text> : <Text></Text> }
             <Button 
                   style={style.button}
                   mode="contained" 
-                  onClick={() => register(email, password)}>Register
+                  onPress={() => register(email, password, confirmPassword, setErrors)}>Register
                 </Button>
             <Button style={style.button} onPress={() => navigation.navigate('Login')}>Login</Button>
           </View>
-
          </View> 
 }
 
@@ -76,6 +99,10 @@ const style = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+
+  erro: {
+    color: 'red'
   }
 
 })

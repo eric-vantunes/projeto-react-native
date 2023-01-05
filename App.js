@@ -1,5 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+// import { StatusBar } from 'expo-status-bar';
+// import { Text, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { IconButton } from 'react-native-paper';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -71,16 +71,14 @@ export default function App() {
             />
           </Tab.Navigator>
           :
-          <Stack.Navigator>
+          <Stack.Navigator
+            initialRouteName="Register"
+          >
             <Stack.Screen 
               name='Login' 
               component={Login}
               options={{
                 headerShown: false
-              }}
-
-              initialParams={{
-                teste: 'Olá mundo'
               }}
             />
             <Stack.Screen 
