@@ -1,5 +1,7 @@
+import { clearStorage } from "./storage";
+
 const isLoggedIn = () => {
-  return false;
+  return true;
 };
 
 const login = (email, password) => {
@@ -70,11 +72,12 @@ const register = (_email, _password, confirmPassword, setErrors) => {
       }))
   }
 }
-const logout = () => {
-
+const logout = async () => {
+    await clearStorage();
 }
 export {
   isLoggedIn,
   login,
   register,
+  logout
 }

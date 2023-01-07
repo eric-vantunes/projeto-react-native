@@ -1,40 +1,53 @@
 // import { StatusBar } from 'expo-status-bar';
 // import { Text, View } from 'react-native';
 import { useState, useEffect } from 'react';
-import { IconButton } from 'react-native-paper';
+import { IconButton, Switch } from 'react-native-paper';
+import { Provider as PaperProvider } from 'react-native-paper';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import { darkTheme, lightTheme } from './theme';
+import { verifyTheme } from './services/util';
+
 import { isLoggedIn } from './services/auth';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { saveStorage } from './services/storage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 
 export default function App() {
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [modeColor, setModeColor] = useState('light');
+  const [userLoggedIn, setUserLoggedIn] = useState(true);
 
   useEffect(() => {
     setUserLoggedIn(isLoggedIn());
+    verifyTheme(setModeColor);
   }, [])
 
-  const leaveButton = () => {
-    return <IconButton
-              icon="exit-to-app"
-              size={20}
-              onPress={() => console.log('Pressed')}
-           />
+  const changeThemeColor = () => {
+    return <>
+            <Switch 
+              value={modeColor === "dark"}
+              onValueChange={()=>{
+                let m = modeColor === "light" ? "dark" : "light";
+                setModeColor(m)
+                saveStorage("modeColor", m)
+              }}
+            />
+           </>
   }
 
   return (
-    <NavigationContainer>
+    <PaperProvider theme={modeColor === 'light' ? lightTheme : darkTheme}>
+        <NavigationContainer>
       {
         userLoggedIn ?
           <Tab.Navigator screenOptions={({ route }) => ({
@@ -53,7 +66,7 @@ export default function App() {
               );
             },
           })}
-          initialRouteName="Home"
+          initialRouteName="Profile"
           >
             <Tab.Screen name="Home" 
             component={Home}
@@ -66,7 +79,10 @@ export default function App() {
             component={Profile}
             options={{
               headerTitleAlign: "Profile",
-              headerRight: () => leaveButton()
+              headerRight: () => changeThemeColor()
+            }}
+            initialParams={{
+              modeColor
             }}
             />
           </Tab.Navigator>
@@ -92,6 +108,9 @@ export default function App() {
       }
 
     </NavigationContainer>
+    </PaperProvider>
+
+
   );
 }
 
