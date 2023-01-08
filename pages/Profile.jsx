@@ -2,8 +2,11 @@ import { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { FAB, Button ,TextInput, Avatar, Card } from "react-native-paper";
 import { updateProfile } from "../services/user";
+import { useTheme } from "react-native-paper";
 
 const Profile = ({ route }) => {
+  const theme = useTheme();
+
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
@@ -11,7 +14,7 @@ const Profile = ({ route }) => {
   
   return <View style={{
           ...style.box,
-          // backgroundColor: route.params.modeColor === 'light' ? '#fff' : '#222'
+          backgroundColor: theme.colors.bodyBackground
         }}>
             <Card style={style.card}>
               <Avatar.Image style={style.avatar} size={200} source={require('../assets/img/profile.jpg')} />
@@ -55,10 +58,19 @@ const Profile = ({ route }) => {
             onChangeText={text => setName(text)}
           />
           <View style={style.container}>
-            <Button 
+                <Button 
                   style={style.button}
                   mode="contained" 
                   onPress={() => updateProfile({})}>Update profile
+                </Button>
+                <Button 
+                  style={{
+                    ...style.button,
+                    backgroundColor: theme.colors.error
+
+                  }}
+                  mode="contained" 
+                  onPress={() => updateProfile({})}>Exit
                 </Button>
           </View>
 
@@ -81,7 +93,9 @@ const style = StyleSheet.create({
   },
 
   button: {
-    borderRadius: 5
+    borderRadius: 5,
+    marginBottom: 5
+   
   },
 
   input: {
@@ -101,7 +115,6 @@ const style = StyleSheet.create({
   },
 
   fab: {
-    backgroundColor: '#f3f3f3',
     position: 'absolute',
     margin: 16,
     bottom: 0,

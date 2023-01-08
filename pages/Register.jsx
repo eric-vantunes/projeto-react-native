@@ -25,8 +25,8 @@ const Register = ({ route, navigation }) => {
   });
   
   return <View style={{
-              ...style.box,
-              backgroundColor: theme.colors.inverseOnSurface
+          ...style.box,
+          backgroundColor: theme.colors.bodyBackground
           }}>
             <Avatar.Image style={style.avatar} size={250} source={require('../assets/img/logo.png')} />
             <Text style={style.text}>Sign-up</Text>
@@ -92,7 +92,6 @@ const style = StyleSheet.create({
     width: '100%'
   },
   box: {
-    backgroundColor: '#fff',
     padding: 20,
     display: 'flex',
     width: '100%',

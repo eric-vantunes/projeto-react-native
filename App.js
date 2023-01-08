@@ -14,7 +14,7 @@ import { verifyTheme } from './services/util';
 
 import { isLoggedIn } from './services/auth';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { saveStorage } from './services/storage';
@@ -24,7 +24,7 @@ const Tab = createBottomTabNavigator();
 
 
 export default function App() {
-  const [modeColor, setModeColor] = useState('light');
+    const [modeColor, setModeColor] = useState('light');
   const [userLoggedIn, setUserLoggedIn] = useState(true);
 
   useEffect(() => {
@@ -66,18 +66,35 @@ export default function App() {
               );
             },
           })}
-          initialRouteName="Profile"
+          initialRouteName="Home"
           >
-            <Tab.Screen name="Home" 
+            <Tab.Screen name="Home"
             component={Home}
             options={{
+              title: 'My tasks',
+              headerStyle: {
+                backgroundColor: modeColor === 'light' ? lightTheme.colors.headerBackground : darkTheme.colors.headerBackground,
+              },
+              headerTintColor:  modeColor === 'light' ? lightTheme.colors.headerColorText : darkTheme.colors.headerColorText,
+              headerRight: () => changeThemeColor(),
+              tabBarStyle: {
+                backgroundColor: modeColor === 'light' ? lightTheme.colors.headerBackground : darkTheme.colors.headerBackground,
+              },
               headerTitleAlign: "home",
-              headerRight: () => leaveButton()
+              headerRight: () => changeThemeColor()
             }}
             />
             <Tab.Screen name="Profile" 
             component={Profile}
             options={{
+              headerStyle: {
+                backgroundColor: modeColor === 'light' ? lightTheme.colors.headerBackground : darkTheme.colors.headerBackground,
+              },
+              headerTintColor:  modeColor === 'light' ? lightTheme.colors.headerColorText : darkTheme.colors.headerColorText,
+              headerRight: () => changeThemeColor(),
+              tabBarStyle: {
+                backgroundColor: modeColor === 'light' ? lightTheme.colors.headerBackground : darkTheme.colors.headerBackground,
+              },
               headerTitleAlign: "Profile",
               headerRight: () => changeThemeColor()
             }}
