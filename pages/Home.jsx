@@ -1,18 +1,30 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { useTheme, Modal, Text, Portal, Button, Provider, FAB, TextInput } from "react-native-paper";
+import { useTheme, Modal, Portal, Provider, FAB, Snackbar} from "react-native-paper";
+import Task from "../components/Task";
 
 
 const Home = ({navigation}) => {
   const theme = useTheme();
   const [visible, setVisible] = useState(false);
+  const [visibleSnack, setVisibleSnack] = useState(false);
+  const [taskId] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [timeExpiration, setTimeExpiration] = useState("");
   const [dateExpiration, setDateExpiration] = useState("");
 
+  const toggleSnack = () => {
+    setVisibleSnack(!visibleSnack);
+  }
+
   const toggleModal = () => {
     setVisible(!visible)
+  }
+
+  const saveTask = () => {
+    toggleModal();
+    toggleSnack();
   }
 
   return <View style={{
@@ -23,37 +35,33 @@ const Home = ({navigation}) => {
       <Portal>
         <Modal visible={visible} onDismiss={toggleModal} contentContainerStyle={{
           ...style.modal,
-          backgroundColor: theme.colors.bodyBackground,
-
+          backgroundColor: theme.colors.bodyBackground
         }}>
-          <TextInput
-              style={style.input}
-              mode="outlined"
-              label="Title"
-              value={title}
-              onChangeText={text => setTitle(text)}
-            />
-          <TextInput
-              multiline={true}
-              numberOfLines={5}         
-              style={{
-                ...style.input,
-                padding: 0,
-                margin: 0,
-                height: 150,
-                width: '100%'
-                
-              }}
-              mode="outlined"
-              label="Description"
-              color="primary"
-              value={description}
-              onChangeText={text => setDescription(text)}
-            />
+          <Task 
+            taskId={taskId}
+            title = {title} 
+            setTitle = {setTitle}
+            description = {description}
+            setDescription = {setDescription}
+            timeExpiration = {timeExpiration}
+            setTimeExpiration = {setTimeExpiration}
+            dateExpiration = {dateExpiration}
+            setDateExpiration = {setDateExpiration}
+            saveTask={saveTask}
+            toggleModal={toggleModal}
+          />
 
         </Modal>
       </Portal>
     </Provider>
+
+    <Snackbar
+        visible={visibleSnack}
+        duration={4000}
+        onDismiss={toggleSnack}>
+        Task saved sucessfuly!!!
+      </Snackbar>
+
       <FAB
           icon="plus"
           style={{
@@ -63,7 +71,6 @@ const Home = ({navigation}) => {
           }}
           onPress={toggleModal}
       />
-
         </View>
         
 }
@@ -86,14 +93,7 @@ const style = StyleSheet.create({
     backgroundColor: '#fff',
     width: '100%',
     padding: 18
-  },
-  input: {
-    width: '100%',
-  },
-  button: {
-    marginTop: 10,
-    width: '100%', 
-  },
+  }
 })
 
 export default Home;

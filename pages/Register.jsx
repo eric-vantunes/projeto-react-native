@@ -62,7 +62,7 @@ const Register = ({ route, navigation }) => {
             <Button 
                   style={style.button}
                   mode="contained" 
-                  onPress={() => register(email, password, confirmPassword, setErrors)}>Register
+                  onPress={() => register(email, password, confirmPassword, setErrors, route.params.firebaseApp)}>Register
                 </Button>
             <Button style={style.button} onPress={() => navigation.navigate('Login')}>Login</Button>
           </View>
