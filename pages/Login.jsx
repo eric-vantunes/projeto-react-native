@@ -69,6 +69,7 @@ const style = StyleSheet.create({
     width: '100%'
   },
   box: {
+    backgroundColor: '#000444',
     padding: 20,
     display: 'flex',
     width: '100%',

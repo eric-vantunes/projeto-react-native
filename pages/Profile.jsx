@@ -1,16 +1,44 @@
-import { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { FAB, Button, TextInput, Avatar, Card } from "react-native-paper";
-import { updateProfile } from "../services/user";
-import { useTheme } from "react-native-paper";
+import { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { FAB, Button, TextInput, Avatar, Card, Snackbar } from 'react-native-paper';
+import { getUser, _updateProfile, getFile } from '../services/user';
+import { useTheme } from 'react-native-paper';
+import { logout } from '../services/auth';
+import { pickImage } from '../services/image';
 
 const Profile = ({ route }) => {
   const theme = useTheme();
 
+  const [snackBarShow, setSnackBarShow] = useState(false);
+  const [messageSnack, setMessageSnack] = useState("");
+
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [image, setImage] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
+  const [photoURLShow, setPhotoURLShow] = useState("");
+
+  const loadUser = async () => {
+    const user = await getUser();
+    setEmail(user.email)
+    setDisplayName(user.displayName)
+    if(user.photoURL){
+        try{
+            setPhotoURLShow(await getFile(route.params.firebaseApp, user.photoURL))
+        }catch(err){
+
+        }
+    }
+}
+
+const uploadPhoto = async () => {
+    const image = await pickImage();
+    setPhotoURL(image);
+    setPhotoURLShow(image);
+}
+
+useEffect(() => {
+    loadUser();
+}, []);
 
   return (
     <View
@@ -23,23 +51,23 @@ const Profile = ({ route }) => {
         <Avatar.Image
           style={style.avatar}
           size={200}
-          source={require("../assets/img/profile.jpg")}
+          source={{ uri: photoURLShow ? photoURLShow : require("../assets/img/user.jpg")}}
         />
-        <FAB
+        {/* <FAB
           icon="camera"
           style={{
             ...style.fab,
             left: "-10.5%",
           }}
           onPress={() => console.log("Pressed")}
-        />
+        /> */}
         <FAB
           icon="folder-image"
           style={{
             ...style.fab,
-            right: "-10.5%",
+            right: "-12.5%",
           }}
-          onPress={() => console.log("Pressed")}
+          onPress={uploadPhoto}
         />
       </Card>
       <Text style={style.text}>My Profile</Text>
@@ -53,36 +81,40 @@ const Profile = ({ route }) => {
       <TextInput
         style={style.input}
         mode="outlined"
-        label="Username"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
-      />
-      <TextInput
-        style={style.input}
-        mode="outlined"
         label="Name"
-        value={name}
-        onChangeText={(text) => setName(text)}
+        value={displayName}
+        onChangeText={(text) => setDisplayName(text)}
       />
       <View style={style.container}>
-        <Button
-          style={style.button}
-          mode="contained"
-          onPress={() => updateProfile({})}
-        >
-          Update profile
+      <Button style={style.button} mode="contained" color="primary" onPress={async () => {
+              try{
+                  await _updateProfile(route.params.firebaseApp, {
+                      email,
+                      displayName,
+                      photoURL
+                  })
+                  setMessageSnack("Perfil atualizado com sucesso!")
+              }catch(err){
+                  setMessageSnack("Erro ao atualizar perfil!")
+              }
+              setSnackBarShow(true)
+          }}>Update profile
         </Button>
-        <Button
-          style={{
-            ...style.button,
-            backgroundColor: theme.colors.error,
-          }}
-          mode="contained"
-          onPress={() => updateProfile({})}
-        >
-          Exit
+        <Button style={{
+              ...style.button,
+              backgroundColor: theme.colors.error
+          }} mode="contained" color="error" onPress={async () => {
+              await logout()
+              route.params.setUserLoggedIn(false);
+          }}>Exit
         </Button>
       </View>
+
+      <Snackbar
+        visible={snackBarShow}
+        duration={1000}>
+        {messageSnack}
+      </Snackbar>
     </View>
   );
 };

@@ -59,12 +59,15 @@ const Register = ({ route, navigation }) => {
           />
           <View style={style.container}>
           { errors.confirmPassword.status ? <Text style={style.erro}>{ errors.confirmPassword.msg }</Text> : <Text></Text> }
-            <Button 
-                  style={style.button}
-                  mode="contained" 
-                  onPress={() => register(email, password, confirmPassword, setErrors, route.params.firebaseApp)}>Register
-                </Button>
-            <Button style={style.button} onPress={() => navigation.navigate('Login')}>Login</Button>
+          <Button style={style.button} mode="contained" onPress={async () => {
+                    try{
+                        await register(email, password, confirmPassword, setErrors, route.params.firebaseApp);
+                        route.params.setUserLoggedIn(true);
+                    }catch(err){
+                        alert(err)
+                    }
+                }}>Register</Button>
+                <Button style={style.button} onPress={() => navigation.navigate('Login')}>Entrar</Button>
           </View>
          </View> 
 }
